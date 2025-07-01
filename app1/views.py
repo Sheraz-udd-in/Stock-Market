@@ -1,5 +1,8 @@
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 # # Create your views here.
 import requests
@@ -30,11 +33,10 @@ from .models import Stocks
 #     '''
 #     return  HttpResponse(page)
 
-def fun(request) :
+@login_required
+def index(request) :
     return render(request ,  'index.html')
 
-def fun1(request) :
-    return render(request ,  'market.html')
 
 
 def getData(request) :
@@ -106,7 +108,7 @@ def getData(request) :
         priceData =  priceData.json()[0]['close']
 
         # insert into SQL
-        stock = Stocks(ticker  = Metadata['ticker']  , name  =  Metadata['name'] ,  Description =  Metadata['description'] , Current_price  = priceData)
+        stock = Stocks(ticker  = Metadata['ticker']  , name  =  Metadata['name'] ,  description =  Metadata['description'] , curr_price  = priceData)
         stock.save()
 
     nasdaq_tickers =  nasdaq_tickers[11:30]
@@ -117,8 +119,27 @@ def getData(request) :
     return HttpResponse("Stock Data Downloaded")
 
 
-
+@login_required
 def stocks(request) :
     stocks  = Stocks.objects.all()
     context  =  {'data' :  stocks}
     return render(request , 'market.html' ,  context)
+
+
+def loginView(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(username=username, password=password)
+        if user:
+            login(request, user)
+            return redirect('index')
+        else:
+            messages.error(request, "Invalid credentials")
+
+    return render(request, 'login.html')
+
+
+def logoutView(request) :
+    logout(request)
+    return redirect('login')

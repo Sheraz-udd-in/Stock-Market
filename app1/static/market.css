@@ -1,6 +1,6 @@
 .card {
-  background-color: #1f2937; /* dark slate */
-  color: white;
+  background-color: white;
+  color: black;
   border-radius: 16px;
   padding: 20px;
   margin: 10px;
@@ -13,6 +13,7 @@
 .card:hover {
   transform: translateY(-5px);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+  border-color : blue
 }
 
 .card h3 {
@@ -44,27 +45,33 @@
 }
 
 .card-buttons .buy {
-  background-color: #00c853;
-  color: white;
+  background-color: white;
+  color: black;
+  border :  1px solid  green;
 }
 
 .card-buttons .buy:hover {
   background-color: #00e676;
+  color: white;
 }
 
 .card-buttons .sell {
-  background-color: #d32f2f;
-  color: white;
+  background-color: white;
+  color: black;
+  border : 1px solid red;
 }
 
 .card-buttons .sell:hover {
   background-color: #f44336;
+  color: white;
 }
 
 
 .wrapper {
-  max-width: 1500px;
-  margin: auto;
+  display :  flex;
+  justify-content : center ;
+  align-items :  center ;
+  padding-left :  70px;
 }
 
 .card-container {

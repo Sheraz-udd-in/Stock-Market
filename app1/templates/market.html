@@ -1,16 +1,7 @@
-{%load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="{% static 'market.css' %}">
-    <link rel="stylesheet" href="{% static 'style.css' %}">
-</head>
-<body>
+{% extends 'base.html' %}
 
-{% include 'components/navbar.html' %}
 
+{% block content%}
 <div class ='wrapper'>
     <div class  =  'card-container'>
     {% for  i in data%}
@@ -18,10 +9,5 @@
 {% endfor %}
 </div>
 </div>
-{% include 'components/footer.html' %}
 
-
-
-
-</body>
-</html>
+{% endblock %}

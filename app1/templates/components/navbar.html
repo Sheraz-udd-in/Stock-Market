@@ -1,8 +1,13 @@
-<div class ="nav">
+<div class="nav">
     <h3>Investing.com</h3>
     <ul>
-        <li><a href="{% url 'index' %}">HOME</a></li>
-        <li><a href="{% url 'market' %}">MARKET</a></li>
-        <li>LOGOUT</li>
+        <li><a href="{% url 'index' %}">Home</a></li>
+        <li><a href="{% url 'stocks' %}">Stocks</a></li>
+
+        {% if request.user.is_authenticated %}
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+        {% else %}
+            <li><a href="{% url 'login' %}">Login</a></li>
+        {% endif %}
     </ul>
 </div>
