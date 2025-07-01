@@ -1,4 +1,3 @@
-
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 
@@ -110,15 +109,16 @@ def getData(request) :
         stock = Stocks(ticker  = Metadata['ticker']  , name  =  Metadata['name'] ,  Description =  Metadata['description'] , Current_price  = priceData)
         stock.save()
 
-    nasdaq_tickers =  nasdaq_tickers[:10]
+    nasdaq_tickers =  nasdaq_tickers[11:30]
     for i in nasdaq_tickers :
         getStock(i)
 
 
     return HttpResponse("Stock Data Downloaded")
 
-def stocks(request):
-    stocks = Stocks.objects.all()
-    print(stocks)
-    return HttpResponse("Stocks..")
-    
+
+
+def stocks(request) :
+    stocks  = Stocks.objects.all()
+    context  =  {'data' :  stocks}
+    return render(request , 'market.html' ,  context)

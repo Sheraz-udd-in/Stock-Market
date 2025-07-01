@@ -1,11 +1,27 @@
+{%load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="{% static 'market.css' %}">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body>
-<h1>This is the market page</h1>
-<a href="{% url  'index' %}"><- back to home</a>
+
+{% include 'components/navbar.html' %}
+
+<div class ='wrapper'>
+    <div class  =  'card-container'>
+    {% for  i in data%}
+{% include 'components/card.html' with ticker=i.ticker  name=i.name  curr_price=i.curr_price%}
+{% endfor %}
+</div>
+</div>
+{% include 'components/footer.html' %}
+
+
+
+
 </body>
 </html>

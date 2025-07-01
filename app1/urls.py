@@ -16,11 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from .views import fun , fun1 , getData, stocks
+from .views import fun , getData ,  stocks,fun1
 
 
 urlpatterns = [
     path('',  fun , name  = 'index'),
-    path('stocks/' , stocks , name  = 'stocks') ,
+    path('market/', fun1,name= "market"),
+    path('stocks/' ,stocks , name  = 'stocks') ,
     path('data/',getData , name = 'data'  )
 ]
