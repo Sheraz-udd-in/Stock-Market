@@ -1,25 +1,28 @@
-{% load static %}
+<!-- {% load static %}  
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>This is market page</title>
+    <title>Logout Page</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'market.css' %}">
 </head>
 <body>
-    <header>
-        <h1>Market Place</h1>
+    <header class="main-header">
+        <h1>Logout Page</h1>
+        <nav class="navbar">
+            <ul>
+                <li><a href="{% url 'index' %}">Home</a></li>
+                <li><a href="{% url 'market' %}">Market</a></li>
+                <li><a href="{% url 'register' %}">Register</a></li>
+                <li><a href="{% url 'login' %}">Login</a></li>
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+            </ul>
+        </nav>
     </header>
-    <nav>
-        <a href="{% url 'index' %}">Home</a>
-        <a href="{% url 'market' %}">Market</a>
-        <a href="{% url 'register' %}">Register</a>
-        <a href="{% url 'login' %}">Login</a>
-        <a href="{% url 'logout' %}">Logout</a>
-    </nav>
     <main>
         <!-- Your market content here -->
-    </main>
+    <!-- </main>
+<a href="{%url }"
 </body>
-</html>
+</html> --> -->

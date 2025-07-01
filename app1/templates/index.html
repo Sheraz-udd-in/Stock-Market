@@ -3,25 +3,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Welcome to Stock Market</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
+
 </head>
 <body>
-    <header class="main-header">
-        <h1>Welcome to Stock Market</h1>
-        <nav class="navbar">
-            <ul>
-                <li><a href="{% url 'index' %}">Home</a></li>
-                <li><a href="{% url 'market' %}">Market</a></li>
-                <li><a href="{% url 'register' %}">Register</a></li>
-                <li><a href="{% url 'login' %}">Login</a></li>
-                <li><a href="{% url 'logout' %}">Logout</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <!-- Your page content here -->
-    </main>
+{% include 'components/navbar.html' %}
+
+{% include 'components/footer.html' %}
 </body>
 </html>
