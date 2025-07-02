@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.contrib.auth import logout
 from django.urls import path
-from .views import index, getData ,  stocks , loginView , logoutView
+from .views import index, getData ,  stocks , loginView , logoutView,registerView
 
 
 urlpatterns = [
@@ -25,5 +25,6 @@ urlpatterns = [
     path('stocks/' ,stocks , name  = 'stocks') ,
     path('data/',getData , name = 'data'  ),
     path('login/' , loginView , name  = 'login') ,
-    path('logout/' ,  logoutView , name = 'logout')
+    path('logout/' ,  logoutView , name = 'logout'),
+    path('register/', registerView, name='register')
 ]

@@ -143,3 +143,7 @@ def loginView(request):
 def logoutView(request) :
     logout(request)
     return redirect('login')
+
+def registerView(request):
+    # Your registration logic here
+    return render(request, 'register.html')
