@@ -1,1 +1,73 @@
-{% extends 'base.html '%}
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="form-wrapper">
+  <div class="form-container">
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+
+      <!-- User fields -->
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" name="username" id="username" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" required>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" required>
+      </div>
+
+      <div class="form-group">
+        <label for="first_name">First Name</label>
+        <input type="text" name="first_name" id="first_name" required>
+      </div>
+
+      <div class="form-group">
+        <label for="last_name">Last Name</label>
+        <input type="text" name="last_name" id="last_name" required>
+      </div>
+
+      <!-- UserInfo fields -->
+      <div class="form-group">
+        <label for="address">Address</label>
+        <input type="text" name="address" id="address" required>
+      </div>
+
+      <div class="form-group">
+        <label for="panCard">PAN Card Number</label>
+        <input type="text" name="panCard" id="panCard" required>
+      </div>
+
+      <div class="form-group">
+        <label for="phoneNumber">Phone Number</label>
+        <input type="text" name="phoneNumber" id="phoneNumber" required>
+      </div>
+
+      <div class="form-group">
+        <label for="profile_pic">Profile Picture</label>
+        <input type="file" name="profile_pic" id="profile_pic" accept="image/*">
+      </div>
+
+      <div class="form-group">
+        <label for="panCard_Image">PAN Card Image</label>
+        <input type="file" name="panCard_Image" id="panCard_Image" accept="image/*">
+      </div>
+
+      <div class="form-group">
+        <button type="submit">Register</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

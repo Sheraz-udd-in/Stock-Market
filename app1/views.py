@@ -1,15 +1,16 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 
 # # Create your views here.
 import requests
 
-from .models import Stocks
+from .models import Stocks, UserInfo
 
-
+webscoket_api_key = 'd1hqgb1r01qsvr2bqhc0d1hqgb1r01qsvr2bqhcg'
 #
 
 # def fun(request) :
@@ -122,7 +123,7 @@ def getData(request) :
 @login_required
 def stocks(request) :
     stocks  = Stocks.objects.all()
-    context  =  {'data' :  stocks}
+    context  =  {'data' :  stocks ,  'api_key' : webscoket_api_key }
     return render(request , 'market.html' ,  context)
 
 
@@ -144,6 +145,41 @@ def logoutView(request) :
     logout(request)
     return redirect('login')
 
-def registerView(request):
-    # Your registration logic here
+def register(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        email = request.POST.get('email')
+        first_name  =  request.POST.get('first_name')
+        last_name  = request.POST.get('last_name')
+
+        address =   request.POST.get('address')
+        panCard = request.POST.get('panCard')
+        phoneNumber = request.POST.get('phoneNumber')
+        profile_pic = request.FILES.get('profile_pic')
+        panCard_Image = request.FILES.get('panCard_Image')
+
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "Username already exists.")
+            return render(request, 'register.html')
+
+
+        user = User(username=username, email=email , first_name = first_name ,  last_name = last_name)
+        user.set_password(password)
+        user.save()
+
+
+        user_info = UserInfo(
+            user=user,
+            pancard_number =panCard,
+            address = address ,
+            phone_number=phoneNumber,
+            user_image=profile_pic,
+            pancard_image=panCard_Image,
+        )
+        user_info.save()
+
+        login(request, user)
+        return redirect('index')
+
     return render(request, 'register.html')
