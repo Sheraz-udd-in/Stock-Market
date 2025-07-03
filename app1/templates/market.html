@@ -5,7 +5,7 @@
 <div class ='wrapper'>
     <div class  =  'card-container'>
     {% for  i in data%}
-{% include 'components/card.html' with ticker=i.ticker  name=i.name  curr_price=i.curr_price%}
+{% include 'components/card.html' with ticker=i.ticker name=i.name curr_price=i.curr_price id=i.id %}
 {% endfor %}
 </div>
 </div>

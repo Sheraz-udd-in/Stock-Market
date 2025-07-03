@@ -7,7 +7,13 @@
   </div>
 
   <div class="card-buttons">
+    <form method="POST" action="{% url 'buy' id %}">
+      {% csrf_token %}
+      <input type="number" name="quantity" min="1" placeholder="Qty" required style="width: 60px;">
+      <button type="submit" class="buy">Buy</button>
+    </form>
+
+    <!-- Optional: Sell button (future form) -->
     <button class="sell">Sell</button>
-    <button class="buy">Buy</button>
   </div>
 </div>
