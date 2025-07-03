@@ -1,14 +1,38 @@
-import requests
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.core.mail import send_mail
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import render, redirect, get_object_or_404
 
-from .models import *
+# # Create your views here.
+import requests
 
+from .models import Stocks, UserInfo, UserStock
+
+webscoket_api_key = 'd1hqgb1r01qsvr2bqhc0d1hqgb1r01qsvr2bqhcg'
+#
+
+# def fun(request) :
+#     page  = '''
+#     <!DOCTYPE html>
+# <html lang="en">
+# <head>
+#     <meta charset="UTF-8">
+#     <title>Title</title>
+# </head>
+# <body>
+# <h1>Stock Market App</h1>
+# <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Blanditiis commodi dignissimos dolor, ducimus enim harum in ipsum iure laboriosam minus, natus odit officiis omnis optio quibusdam quo, sapiente sunt voluptatibus!</p>
+# <ul>
+#     <li>s1</li>
+#     <li>s2</li>
+#     <li>s3</li>
+# </ul>
+# </body>
+# </html>
+#     '''
+#     return  HttpResponse(page)
 
 @login_required
 def index(request) :
@@ -73,7 +97,7 @@ def getData(request) :
     headers = {
         'Content-Type': 'application/json'
     }
-    token  =  "65296f95ff2c90506f05875435311a8227a560db"
+    token  =  "fced443141e501d554d0b38c4a34bba085172b1e"
     def getStock(ticker):
         url  = f"https://api.tiingo.com/tiingo/daily/{ticker}?token={token}"
         priceurl  =  f"https://api.tiingo.com/tiingo/daily/{ticker}/prices?token={token}"
@@ -99,7 +123,7 @@ def getData(request) :
 @login_required
 def stocks(request) :
     stocks  = Stocks.objects.all()
-    context  =  {'data' :  stocks}
+    context  =  {'data' :  stocks ,  'api_key' : webscoket_api_key }
     return render(request , 'market.html' ,  context)
 
 
@@ -121,14 +145,15 @@ def logoutView(request) :
     logout(request)
     return redirect('login')
 
-
 def register(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
         email = request.POST.get('email')
+        first_name  =  request.POST.get('first_name')
+        last_name  = request.POST.get('last_name')
 
-
+        address =   request.POST.get('address')
         panCard = request.POST.get('panCard')
         phoneNumber = request.POST.get('phoneNumber')
         profile_pic = request.FILES.get('profile_pic')
@@ -139,17 +164,18 @@ def register(request):
             return render(request, 'register.html')
 
 
-        user = User(username=username, email=email)
+        user = User(username=username, email=email , first_name = first_name ,  last_name = last_name)
         user.set_password(password)
         user.save()
 
 
         user_info = UserInfo(
             user=user,
-            panCard=panCard,
-            phoneNumber=phoneNumber,
-            profile_pic=profile_pic,
-            panCard_Image=panCard_Image
+            pancard_number =panCard,
+            address = address ,
+            phone_number=phoneNumber,
+            user_image=profile_pic,
+            pancard_image=panCard_Image,
         )
         user_info.save()
 
@@ -157,48 +183,46 @@ def register(request):
         return redirect('index')
 
     return render(request, 'register.html')
-from django.views.decorators.http import require_http_methods
+
+
+
 @login_required
-@require_http_methods(["POST"])
-def buy(request, id):
-    user = request.user
+def buy(request , id) :
+    stock  = get_object_or_404(Stocks ,  id =  id)
+    user =  request.user
+    purchase_quantity = int(request.POST.get('quantity'))
+    purchase_price =   stock.curr_price
+
+    # UserStock is an exmaple of Composite Keys in DBMS (user , stock) --> candidate key
+    userStocks = UserStock.objects.filter(stock  =  stock   ,  user  =  user).first()
+    if userStocks :
+        userStocks.purchase_price = (userStocks.purchase_quantity*userStocks.purchase_price  +  purchase_price*purchase_quantity) / (purchase_quantity + userStocks.purchase_quantity)
+        userStocks.purchase_quantity =  userStocks.purchase_quantity +  purchase_quantity
+        userStocks.save()
+    else  :
+        userStock = UserStock(stock  = stock ,  user = user  ,  purchase_price =  purchase_price ,  purchase_quantity =  purchase_quantity )
+        userStock.save()
+
+
+    return redirect('index')
+
+
+
+def  sell(request , id) :
     stock = get_object_or_404(Stocks, id=id)
+    user = request.user
+    sell_quantity = int(request.POST.get('quantity'))
+    userStock  =  UserStock.objects.filter(stock  =  stock ,  user =  user).first()
 
-    try:
-        purchase_quantity = int(request.POST.get('quantity'))
-        if purchase_quantity <= 0:
-            messages.error(request, "Quantity must be positive.")
-            return redirect('stocks')
+    if userStock.purchase_quantity <  sell_quantity :
+        messages.error(request, "Can't sell more than you own")
+        return redirect('market')
 
-        user_stock, created = UserStock.objects.get_or_create(
-            user=user,
-            stock=stock,
-            defaults={
-                'buyQuantity': purchase_quantity,
-                'buyPrice': stock.curr_price
-            }
-        )
+    userStock.purchase_quantity -= sell_quantity
+    userStock.save()
+    return redirect('index')
 
-        if not created:
-            total_quantity = user_stock.buyQuantity + purchase_quantity
-            user_stock.buyPrice = (
-                (user_stock.buyPrice * user_stock.buyQuantity) +
-                (stock.curr_price * purchase_quantity)
-            ) / total_quantity
-            user_stock.buyQuantity = total_quantity
-            user_stock.save()
 
-        send_mail(
-            subject="Buy Confirmation",
-            message=f"You bought {purchase_quantity} shares of {stock.name}.",
-            from_email=None,
-            recipient_list=[user.email],
-            fail_silently=True
-        )
-
-        messages.success(request, f"Successfully bought {purchase_quantity} shares of {stock.name}.")
-        return redirect('index')
-
-    except (ValueError, TypeError):
-        messages.error(request, "Invalid quantity.")
-        return redirect('stocks')
+#1)  Make a view to get all userStock for the perticular user
+# 2) make a template to display cards and pass the context from view to template
+# email notification  on registration   ,  sell and buy

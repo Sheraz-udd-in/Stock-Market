@@ -18,7 +18,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from django.urls import path
-from .views import index, getData ,  stocks , loginView , logoutView , register,buy
+from .views import index, getData ,  stocks , loginView , logoutView , register ,  buy , sell
 
 
 urlpatterns = [
@@ -28,7 +28,9 @@ urlpatterns = [
     path('login/' , loginView , name  = 'login') ,
     path('logout/' ,  logoutView , name = 'logout') ,
     path('register/'  , register ,  name = 'register'),
-    path('buy/<int:id>/', buy, name='buy'),
+    path('buy/<int:id>' , buy,  name ='buy') ,
+    path('sell/<int:id>' , sell,  name ='sell')
+
 ]
 
 

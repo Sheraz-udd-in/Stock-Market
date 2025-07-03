@@ -1,3 +1,4 @@
+<!-- Card Component -->
 <div class="card">
   <h3>{{ name }}</h3>
 
@@ -7,13 +8,48 @@
   </div>
 
   <div class="card-buttons">
-    <form method="POST" action="{% url 'buy' id %}">
-      {% csrf_token %}
-      <input type="number" name="quantity" min="1" placeholder="Qty" required style="width: 60px;">
-      <button type="submit" class="buy">Buy</button>
-    </form>
+    <!-- Sell -->
+    <button class="sell" data-bs-toggle="modal" data-bs-target="#sellModal-{{ stock_id }}">Sell</button>
 
-    <!-- Optional: Sell button (future form) -->
-    <button class="sell">Sell</button>
+    <!-- Buy -->
+    <button class="buy" data-bs-toggle="modal" data-bs-target="#buyModal-{{ stock_id }}">Buy</button>
+  </div>
+</div>
+
+<!-- BUY Modal -->
+<div class="modal fade" id="buyModal-{{ stock_id }}" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="POST" action="{% url 'buy' stock_id %}" class="modal-content">
+      {% csrf_token %}
+      <div class="modal-header">
+        <h5 class="modal-title">Buy {{ name }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="number" name="quantity" placeholder="Quantity" min="1" class="form-control" required>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-success">Confirm Buy</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- SELL Modal -->
+<div class="modal fade" id="sellModal-{{ stock_id }}" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="POST" action="{% url 'sell' stock_id %}" class="modal-content">
+      {% csrf_token %}
+      <div class="modal-header">
+        <h5 class="modal-title">Sell {{ name }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="number" name="quantity" placeholder="Quantity" min="1" class="form-control" required>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-danger">Confirm Sell</button>
+      </div>
+    </form>
   </div>
 </div>
