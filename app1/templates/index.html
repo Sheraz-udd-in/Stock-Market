@@ -1,64 +1,51 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block content %}
-<style>
-  .card {
-    background-color: white;
-    color: black;
-    border-radius: 16px;
-    padding: 20px;
-    margin: 10px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-    transition: transform 0.2s ease, box-shadow 0.3s ease;
-    width: 250px;
-    font-family: 'Segoe UI', sans-serif;
-  }
+<div style="max-width: 900px; margin: auto; padding: 40px 20px;">
+    <h2 style="text-align: center; margin-bottom: 30px;">Your Portfolio</h2>
 
-  .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
-    border-color: blue;
-  }
+    {% if data %}
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background-color: #f2f2f2;">
+                    <th style="padding: 12px; border-bottom: 1px solid #ddd;">Stock Name</th>
+                    <th style="padding: 12px; border-bottom: 1px solid #ddd;">Ticker</th>
+                    <th style="padding: 12px; border-bottom: 1px solid #ddd;">Purchase Price</th>
+                    <th style="padding: 12px; border-bottom: 1px solid #ddd;">Quantity</th>
+                    <th style="padding: 12px; border-bottom: 1px solid #ddd;">Current Price</th>
+                    <th style="padding: 12px; border-bottom: 1px solid #ddd;">Total Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in data %}
+                <tr>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee;">{{ item.stock.name }}</td>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee;">{{ item.stock.ticker }}</td>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee;">$ {{ item.purchase_price|floatformat:2 }}</td>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee;">{{ item.purchase_quantity }}</td>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee;">$ {{ item.stock.curr_price|floatformat:2 }}</td>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee;">$ {{ item.total_value|floatformat:2 }}</td>
+                </tr>
+                {% endfor %}
 
-  .card h4 {
-    margin-bottom: 15px;
-    font-size: 20px;
-    font-weight: 600;
-  }
-
-  .portfolio-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: flex-start;
-    padding: 20px;
-  }
-
-  .home-wrapper {
-    padding-left: 70px;
-  }
-
-  h2, h3 {
-    font-family: 'Segoe UI', sans-serif;
-  }
-</style>
-
-<div class="home-wrapper">
-  <h3>Welcome, {{ request.user.username }} in your Portfolio</h3>
-
-  {% if user_stocks %}
-  <div class="portfolio-container">
-    {% for user_stock in user_stocks %}
-    <div class="card">
-        <h3>{{ user_stock.stock.name }} ({{ user_stock.stock.ticker }})</h3>
-        <p><strong>Quantity:</strong> {{ user_stock.purchase_quantity }}</p>
-        <p><strong>Buy Price:</strong> ${{ user_stock.purchase_price }}</p>
-        <p><strong>Current Price:</strong> ${{ user_stock.stock.curr_price }}</p>
-    </div>
-    {% endfor %}
-  </div>
-  {% else %}
-  <p>You currently don't own any stocks.</p>
-  {% endif %}
+                <!-- Summary Rows -->
+                <tr style="background-color: #f9f9f9; font-weight: bold;">
+                    <td colspan="5" style="text-align: right; padding: 12px;">Total Invested:</td>
+                    <td style="padding: 12px;">$ {{ invested|floatformat:2 }}</td>
+                </tr>
+                <tr style="background-color: #f9f9f9; font-weight: bold;">
+                    <td colspan="5" style="text-align: right; padding: 12px;">Current Value:</td>
+                    <td style="padding: 12px;">$ {{ total_value|floatformat:2 }}</td>
+                </tr>
+                <tr style="background-color: #f9f9f9; font-weight: bold;">
+                    <td colspan="5" style="text-align: right; padding: 12px;">Gains:</td>
+                    <td style="padding: 12px;">{{ gains }}%</td>
+                </tr>
+            </tbody>
+        </table>
+    {% else %}
+        <p style="text-align: center;">You haven't purchased any stocks yet.</p>
+    {% endif %}
 </div>
 {% endblock %}
