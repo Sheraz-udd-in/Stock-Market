@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 
@@ -35,15 +36,16 @@ webscoket_api_key = 'd1hqgb1r01qsvr2bqhc0d1hqgb1r01qsvr2bqhcg'
 #     return  HttpResponse(page)
 
 @login_required
-def index(request) :
+def index(request):
     user = request.user
-    user_stocks = UserStock.objects.filter(user=user).select_related('stock')
+    user_stocks = UserStock.objects.filter(
+        user=user,
+        purchase_quantity__gt=0  # Only include stocks with quantity > 0
+    ).select_related('stock')
     context = {
-        'user_stocks' : user_stocks
+        'user_stocks': user_stocks
     }
-    return render(request ,  'index.html',context)
-
-
+    return render(request, 'index.html', context)
 
 def getData(request) :
     nasdaq_tickers = [
@@ -185,6 +187,12 @@ def register(request):
         user_info.save()
 
         login(request, user)
+
+        send_mail(subject="Welcome to Investing.com",
+                  message=f"Welcome  {user.name} to our platfrom",
+                  from_email=None,
+                  recipient_list=[user.email], fail_silently=False)
+
         return redirect('index')
 
     return render(request, 'register.html')
@@ -208,7 +216,9 @@ def buy(request , id) :
         userStock = UserStock(stock  = stock ,  user = user  ,  purchase_price =  purchase_price ,  purchase_quantity =  purchase_quantity )
         userStock.save()
 
-
+    send_mail(subject="Buyed successfully", message=f"your purchase of stock {stock.name} is successfull",
+              from_email=None,
+              recipient_list=[user.email], fail_silently=True)
     return redirect('index')
 
 
@@ -225,8 +235,10 @@ def  sell(request , id) :
 
     userStock.purchase_quantity -= sell_quantity
     userStock.save()
+    send_mail(subject="Sold successfully", message=f"Your Sale of stock {stock.name} is successfull",
+              from_email=None,
+              recipient_list=[user.email], fail_silently=False)
     return redirect('index')
-
 
 #1)  Make a view to get all userStock for the perticular user
 # 2) make a template to display cards and pass the context from view to template
