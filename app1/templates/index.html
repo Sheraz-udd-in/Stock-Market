@@ -1,16 +1,64 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="{% static 'style.css' %}">
+{% block content %}
+<style>
+  .card {
+    background-color: white;
+    color: black;
+    border-radius: 16px;
+    padding: 20px;
+    margin: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+    width: 250px;
+    font-family: 'Segoe UI', sans-serif;
+  }
 
-</head>
-<body>
-{% include 'components/navbar.html' %}
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+    border-color: blue;
+  }
 
-{% include 'components/footer.html' %}
-</body>
+  .card h4 {
+    margin-bottom: 15px;
+    font-size: 20px;
+    font-weight: 600;
+  }
 
-</html>
+  .portfolio-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: flex-start;
+    padding: 20px;
+  }
+
+  .home-wrapper {
+    padding-left: 70px;
+  }
+
+  h2, h3 {
+    font-family: 'Segoe UI', sans-serif;
+  }
+</style>
+
+<div class="home-wrapper">
+  <h3>Welcome, {{ request.user.username }} in your Portfolio</h3>
+
+  {% if user_stocks %}
+  <div class="portfolio-container">
+    {% for user_stock in user_stocks %}
+    <div class="card">
+        <h3>{{ user_stock.stock.name }} ({{ user_stock.stock.ticker }})</h3>
+        <p><strong>Quantity:</strong> {{ user_stock.purchase_quantity }}</p>
+        <p><strong>Buy Price:</strong> ${{ user_stock.purchase_price }}</p>
+        <p><strong>Current Price:</strong> ${{ user_stock.stock.curr_price }}</p>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p>You currently don't own any stocks.</p>
+  {% endif %}
+</div>
+{% endblock %}

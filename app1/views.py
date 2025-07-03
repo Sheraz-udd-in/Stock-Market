@@ -36,7 +36,12 @@ webscoket_api_key = 'd1hqgb1r01qsvr2bqhc0d1hqgb1r01qsvr2bqhcg'
 
 @login_required
 def index(request) :
-    return render(request ,  'index.html')
+    user = request.user
+    user_stocks = UserStock.objects.filter(user=user).select_related('stock')
+    context = {
+        'user_stocks' : user_stocks
+    }
+    return render(request ,  'index.html',context)
 
 
 
