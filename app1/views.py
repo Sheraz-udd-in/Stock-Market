@@ -11,8 +11,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 import requests
 
 from .models import Stocks, UserInfo, UserStock
+import threading
 
-webscoket_api_key = 'd1hqgb1r01qsvr2bqhc0d1hqgb1r01qsvr2bqhcg'
+webscoket_api_key = 'd1jl5vpr01qvg5gv7rn0d1jl5vpr01qvg5gv7rng'
 #
 
 # def fun(request) :
@@ -214,10 +215,16 @@ def register(request):
 
         login(request, user)
 
-        send_mail(subject="Welcome to Investing.com",
-                  message=f"Welcome  {user.username} to our platfrom",
-                  from_email=None,
-                  recipient_list=[user.email], fail_silently=False)
+        t1 = threading.Thread(
+            target=send_email_async,
+            kwargs={
+                "subject": " Registration sucessfull",
+                "message": f"Dear {user,username} welcome to our platfrom ",
+                "from_email": None,
+                "recipient_list": [user.email],
+            }
+        )
+        t1.start()
 
         return redirect('index')
 
@@ -230,7 +237,9 @@ def buy(request , id) :
     stock  = get_object_or_404(Stocks ,  id =  id)
     user =  request.user
     purchase_quantity = int(request.POST.get('quantity'))
-    purchase_price =   stock.curr_price
+    purchase_price =   float(request.POST.get('real-time-price'))
+    print(purchase_price)
+
 
     # UserStock is an exmaple of Composite Keys in DBMS (user , stock) --> candidate key
     userStocks = UserStock.objects.filter(stock  =  stock   ,  user  =  user).first()
@@ -242,9 +251,18 @@ def buy(request , id) :
         userStock = UserStock(stock  = stock ,  user = user  ,  purchase_price =  purchase_price ,  purchase_quantity =  purchase_quantity )
         userStock.save()
 
-    send_mail(subject="Buy  Option executed successfully", message=f"your purchase of stock {stock.name} is successfull",
-              from_email=None,
-              recipient_list=[user.email], fail_silently=False)
+
+
+    t1 = threading.Thread(
+        target=send_email_async,
+        kwargs={
+            "subject": "Buy Option executed successfully",
+            "message": f"Your purchase of stock {stock.name} was successful",
+            "from_email": None,
+            "recipient_list": [user.email],
+        }
+    )
+    t1.start()
     return redirect('index')
 
 
@@ -261,7 +279,21 @@ def  sell(request , id) :
 
     userStock.purchase_quantity -= sell_quantity
     userStock.save()
-    send_mail(subject="Sell  Option executed successfully", message=f"your Sale of stock {stock.name} is successfull",
-              from_email=None,
-              recipient_list=[user.email], fail_silently=False)
+    t1 = threading.Thread(
+        target=send_email_async,
+        kwargs={
+            "subject": "Sell Option executed successfully",
+            "message": f"Your sale of stock {stock.name} was successful",
+            "from_email": None,
+            "recipient_list": [user.email],
+        }
+    )
+    t1.start()
+
     return redirect('index')
+
+
+
+
+def send_email_async(subject  ,  message  ,  from_email , recipient_list ) :
+    send_mail(subject  =  subject ,  message =  message ,  from_email= from_email , recipient_list = recipient_list )

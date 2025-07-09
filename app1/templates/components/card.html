@@ -4,7 +4,7 @@
 
   <div class="card-price">
     <p>{{ ticker }}</p>
-    <p>$ {{ curr_price }}</p>
+    <p id = "{{ticker}}" >$ {{ curr_price }}</p>
   </div>
 
   <div class="card-buttons">
@@ -27,6 +27,8 @@
       </div>
       <div class="modal-body">
         <input type="number" name="quantity" placeholder="Quantity" min="1" class="form-control" required>
+        <input type="hidden" name="real-time-price"  , id  = "real_time_buy_price" placeholder="price" value = {{curr_price}} required>
+
       </div>
       <div class="modal-footer">
         <button type="submit" class="btn btn-success">Confirm Buy</button>
@@ -46,6 +48,9 @@
       </div>
       <div class="modal-body">
         <input type="number" name="quantity" placeholder="Quantity" min="1" class="form-control" required>
+        <input type="hidden" name="real-time-price"  , id  = "real_time_sell_price" placeholder="price" value = {{curr_price}} required>
+
+
       </div>
       <div class="modal-footer">
         <button type="submit" class="btn btn-danger">Confirm Sell</button>
