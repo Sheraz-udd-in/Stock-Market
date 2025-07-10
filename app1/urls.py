@@ -9,7 +9,6 @@ from .views import *
 urlpatterns = [
     path('', index, name='index'),
     path('stocks/', stocks, name='stocks'),
-    path('data/', getData, name='data'),
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', logoutView, name='logout'),
     path('register/', register, name='register'),

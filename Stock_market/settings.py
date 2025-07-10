@@ -136,3 +136,7 @@ EMAIL_HOST_USER = "uddinsheraz319@gmail.com" # You have to give your email
 #App password
 EMAIL_HOST_PASSWORD = "aciadeeyfzehmzec" # Enter your app passward
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+CRON_CLASSES = {
+    "stocks.cron.StockUpdateCronJob",
+}
