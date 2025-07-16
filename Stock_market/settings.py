@@ -144,7 +144,7 @@ CRON_CLASSES = {
 
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgresql://postgres:Mirza%40%23120@db.cqwoabxobdqitiskdykb.supabase.co:5432/postgres',
+        default='postgresql://postgres:[your password]@db.cqwoabxobdqitiskdykb.supabase.co:5432/postgres',
         conn_max_age=600
     )
 }
