@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,7 +27,7 @@ SECRET_KEY = 'django-insecure-cpxx-&4x$phx+d@jj==bxl!5@(^#x!-kqq3vikjllnx0-n9#*@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']  # Change this to your domain or IP in production
 
 
 # Application definition
@@ -56,7 +57,7 @@ ROOT_URLCONF = 'Stock_market.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],  # Ensure you have a templates directory
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -69,6 +70,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'Stock_market.wsgi.application'
+ASGI_APPLICATION = 'Stock_market.asgi.application'
 
 
 # Database
@@ -117,10 +119,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/static/'
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # settings.py
@@ -144,7 +146,7 @@ CRON_CLASSES = {
 
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgresql://postgres:[your password]@db.cqwoabxobdqitiskdykb.supabase.co:5432/postgres',
+        default='postgresql://postgres:Mirza%40%23120@db.cqwoabxobdqitiskdykb.supabase.co:5432/postgres',
         conn_max_age=600
     )
 }
